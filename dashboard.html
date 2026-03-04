@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="EnergyGuard Live Dashboard — Real-time power consumption monitoring and idle device detection." />
+    <title>Live Dashboard — EnergyGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body class="dashboard-page">
+
+    <div class="bg-grid"></div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container nav-inner">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">⚡</div>
+                <span>Energy<span class="gradient-text">Guard</span></span>
+            </a>
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div class="status-indicator">
+                    <span class="live-dot"></span> System Online
+                </div>
+                <a href="index.html" class="btn btn-outline" style="padding: 8px 18px; font-size:0.85rem;">← Back to
+                    Site</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== DASHBOARD LAYOUT ===== -->
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-label">Overview</div>
+                <div class="sidebar-item active" style="cursor:pointer;"
+                    onclick="window.scrollTo({top:0, behavior:'smooth'})"><span class="si-icon">📊</span> Dashboard
+                </div>
+                <div class="sidebar-item" style="cursor:pointer;"
+                    onclick="document.querySelector('.devices-row').scrollIntoView({behavior:'smooth'})"><span
+                        class="si-icon">⚡</span> Live Monitor</div>
+                <div class="sidebar-item" style="cursor:pointer;"
+                    onclick="document.querySelector('.alert-panel').scrollIntoView({behavior:'smooth'})">
+                    <span class="si-icon">🔔</span> Alerts
+                    <span class="sidebar-badge" id="alertCount">4</span>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Analysis</div>
+                <div class="sidebar-item" style="cursor:pointer;"
+                    onclick="document.getElementById('wasteDetectionPanel').scrollIntoView({behavior:'smooth'})"><span
+                        class="si-icon">📈</span> Analytics</div>
+                <div class="sidebar-item" style="cursor:pointer;"
+                    onclick="document.getElementById('deviceList').scrollIntoView({behavior:'smooth'})"><span
+                        class="si-icon">🏠</span> Devices</div>
+                <div class="sidebar-item" style="cursor:pointer;"
+                    onclick="document.querySelector('.charts-row').scrollIntoView({behavior:'smooth'})"><span
+                        class="si-icon">🤖</span> ML Insights</div>
+                <div class="sidebar-item" style="cursor:pointer;" onclick="window.location.href='index.html'"><span
+                        class="si-icon">📅</span> Home Page</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Settings</div>
+                <div class="sidebar-item" style="cursor:pointer;"
+                    onclick="document.getElementById('siteSettingsPanel').scrollIntoView({behavior:'smooth'})"><span
+                        class="si-icon">⚙️</span> Configuration</div>
+                <div class="sidebar-item" style="cursor:pointer;" onclick="window.location.href='index.html#team'"><span
+                        class="si-icon">👤</span> Profile</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    <h1>Energy <span class="gradient-text">Dashboard</span></h1>
+                    <p id="dashGreeting" style="font-size: 1.1rem; margin-bottom: 4px;">Welcome, User</p>
+                    <p id="dashDateTime" style="color: var(--text-muted); font-size: 0.9rem;">Loading...</p>
+                </div>
+                <div class="dashboard-controls">
+                    <div class="status-indicator">
+                        <span class="live-dot"></span> <span id="liveStatus">Streaming Live</span>
+                    </div>
+                    <button class="dash-btn" onclick="exportData()">⬇ Export CSV</button>
+                    <button class="dash-btn dash-btn-primary" onclick="runDetection()">🤖 Run Detection</button>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card green">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Current Power</span>
+                        <span class="kpi-icon">⚡</span>
+                    </div>
+                    <div class="kpi-value" id="kpiPower">4.2 kW</div>
+                    <div class="kpi-change up" id="kpiPowerChange">▲ 0.3 kW from last hour</div>
+                </div>
+                <div class="kpi-card blue">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Idle Devices</span>
+                        <span class="kpi-icon">😴</span>
+                    </div>
+                    <div class="kpi-value" id="kpiIdle">3</div>
+                    <div class="kpi-change down" id="kpiIdleChange">▼ Down from 5 idle</div>
+                </div>
+                <div class="kpi-card yellow">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Today's Savings</span>
+                        <span class="kpi-icon">💰</span>
+                    </div>
+                    <div class="kpi-value" id="kpiSavings">₹ 120</div>
+                    <div class="kpi-change up">▲ +18% vs yesterday</div>
+                </div>
+                <div class="kpi-card red">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Active Alerts</span>
+                        <span class="kpi-icon">🚨</span>
+                    </div>
+                    <div class="kpi-value" id="kpiAlerts">4</div>
+                    <div class="kpi-change down">▼ Resolve idle devices</div>
+                </div>
+            </div>
+
+            <!-- Energy Savings Stats Bar -->
+            <div class="savings-bar">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Energy Savings Summary</div>
+                        <div class="chart-subtitle">Running totals across monitoring period</div>
+                    </div>
+                </div>
+                <div class="savings-grid">
+                    <div class="saving-item">
+                        <div class="saving-value">287 kWh</div>
+                        <div class="saving-label">Energy Saved (Month)</div>
+                        <div class="saving-bar-wrap">
+                            <div class="saving-bar-fill" style="width:72%"></div>
+                        </div>
+                    </div>
+                    <div class="saving-item">
+                        <div class="saving-value" style="color:var(--secondary)">₹ 3,450</div>
+                        <div class="saving-label">Cost Saved (Month)</div>
+                        <div class="saving-bar-wrap">
+                            <div class="saving-bar-fill" id="savingsBarCost" style="width:65%"></div>
+                        </div>
+                    </div>
+                    <div class="saving-item">
+                        <div class="saving-value" style="color:var(--accent)">142 kg</div>
+                        <div class="saving-label">CO₂ Avoided</div>
+                        <div class="saving-bar-wrap">
+                            <div class="saving-bar-fill" style="width:58%"></div>
+                        </div>
+                    </div>
+                    <div class="saving-item">
+                        <div class="saving-value" style="color:#ffa500">94%</div>
+                        <div class="saving-label">System Uptime</div>
+                        <div class="saving-bar-wrap">
+                            <div class="saving-bar-fill" style="width:94%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Charts Row -->
+            <div class="charts-row">
+                <!-- Power Consumption Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Real-Time Power Consumption</div>
+                            <div class="chart-subtitle">Live wattage feed — updates every second</div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:var(--primary)"></div> Active Load
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:var(--secondary)"></div> Idle Load
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-wrap">
+                        <canvas id="powerChart" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- Device Status Donut -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Device Status</div>
+                            <div class="chart-subtitle">Distribution by state</div>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-wrap" style="display:flex; justify-content:center; padding: 8px 0;">
+                        <canvas id="donutChart" height="200" style="max-height:200px"></canvas>
+                    </div>
+                    <div class="chart-legend"
+                        style="justify-content:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:var(--primary)"></div> Active (8)
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#ffa500"></div> Idle (3)
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:var(--text-muted)"></div> Off (4)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Devices + Alerts Row -->
+            <div class="devices-row">
+
+                <!-- Device List -->
+                <div class="device-list-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Live Device Monitor</div>
+                            <div class="chart-subtitle">All registered devices and status</div>
+                        </div>
+                        <div class="status-indicator"><span class="live-dot"></span> Live</div>
+                    </div>
+                    <div class="device-list" id="deviceList">
+                        <div class="device-item">
+                            <div class="device-icon">❄️</div>
+                            <div class="device-info">
+                                <div class="device-name">Air Conditioner</div>
+                                <div class="device-location">Living Room · Zone A</div>
+                            </div>
+                            <div class="device-watt" style="color:var(--primary)">1.8 kW</div>
+                            <div class="device-status status-active">Active</div>
+                        </div>
+                        <div class="device-item">
+                            <div class="device-icon">💻</div>
+                            <div class="device-info">
+                                <div class="device-name">Desktop PC</div>
+                                <div class="device-location">Office · Zone B</div>
+                            </div>
+                            <div class="device-watt" style="color:#ffa500">0.35 kW</div>
+                            <div class="device-status status-idle">Idle</div>
+                        </div>
+                        <div class="device-item">
+                            <div class="device-icon">💡</div>
+                            <div class="device-info">
+                                <div class="device-name">LED Lighting (Hallway)</div>
+                                <div class="device-location">Hallway · Zone C</div>
+                            </div>
+                            <div class="device-watt" style="color:#ffa500">0.12 kW</div>
+                            <div class="device-status status-idle">Idle</div>
+                        </div>
+                        <div class="device-item">
+                            <div class="device-icon">📺</div>
+                            <div class="device-info">
+                                <div class="device-name">Smart TV</div>
+                                <div class="device-location">Bedroom · Zone D</div>
+                            </div>
+                            <div class="device-watt" style="color:var(--primary)">0.15 kW</div>
+                            <div class="device-status status-active">Active</div>
+                        </div>
+                        <div class="device-item">
+                            <div class="device-icon">🫙</div>
+                            <div class="device-info">
+                                <div class="device-name">Water Heater</div>
+                                <div class="device-location">Utility · Zone E</div>
+                            </div>
+                            <div class="device-watt" style="color:var(--text-muted)">0.00 kW</div>
+                            <div class="device-status status-off">Off</div>
+                        </div>
+                        <div class="device-item">
+                            <div class="device-icon">🧺</div>
+                            <div class="device-info">
+                                <div class="device-name">Washing Machine</div>
+                                <div class="device-location">Utility · Zone E</div>
+                            </div>
+                            <div class="device-watt" style="color:var(--primary)">2.2 kW</div>
+                            <div class="device-status status-active">Active</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Panel -->
+                <div class="alert-panel">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">🔔 Alert Notifications</div>
+                            <div class="chart-subtitle">Recent system alerts and warnings</div>
+                        </div>
+                        <button class="dash-btn" onclick="clearAlerts()"
+                            style="font-size:0.75rem; padding:6px 12px;">Clear All</button>
+                    </div>
+                    <div class="alert-list" id="alertList">
+                        <div class="alert-item warning">
+                            <div class="alert-icon-wrap">⚠️</div>
+                            <div class="alert-content">
+                                <div class="alert-title">Idle Device Detected — Desktop PC</div>
+                                <div class="alert-time">Office Zone · 2 min ago · 0.35 kW idle consumption</div>
+                            </div>
+                        </div>
+                        <div class="alert-item warning">
+                            <div class="alert-icon-wrap">⚠️</div>
+                            <div class="alert-content">
+                                <div class="alert-title">Idle Lights in Hallway</div>
+                                <div class="alert-time">Hallway Zone · 8 min ago · No motion detected for 15 min</div>
+                            </div>
+                        </div>
+                        <div class="alert-item critical">
+                            <div class="alert-icon-wrap">🚨</div>
+                            <div class="alert-content">
+                                <div class="alert-title">Peak Load Threshold Exceeded</div>
+                                <div class="alert-time">System-wide · 12 min ago · Usage above 5.0 kW limit</div>
+                            </div>
+                        </div>
+                        <div class="alert-item info">
+                            <div class="alert-icon-wrap">ℹ️</div>
+                            <div class="alert-content">
+                                <div class="alert-title">ML Model Retrained Successfully</div>
+                                <div class="alert-time">AI Engine · 1 hr ago · Accuracy improved to 98.2%</div>
+                            </div>
+                        </div>
+                        <div class="alert-item success">
+                            <div class="alert-icon-wrap">✅</div>
+                            <div class="alert-content">
+                                <div class="alert-title">Daily Energy Target Achieved</div>
+                                <div class="alert-time">System · Today · Saved 12.5 kWh vs baseline</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Historical Bar Chart -->
+            <div class="chart-card" style="margin-bottom:24px;">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Weekly Energy Consumption Breakdown</div>
+                        <div class="chart-subtitle">Active vs Idle usage over the last 7 days (kWh)</div>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:var(--primary)"></div> Active kWh
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#ffa500"></div> Idle kWh
+                        </div>
+                    </div>
+                </div>
+                <canvas id="weeklyChart" height="150"></canvas>
+            </div>
+
+
+            <!-- ===== SMART ENERGY WASTE DETECTION ===== -->
+            <div class="chart-card" id="wasteDetectionPanel" style="margin-bottom:32px;">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">⚡ Smart Energy Waste Detection</div>
+                        <div class="chart-subtitle">Enter 12 months of consumption to analyse waste patterns</div>
+                    </div>
+                    <div class="status-indicator"><span class="live-dot"></span> Calculator</div>
+                </div>
+
+                <!-- How it works -->
+                <div class="sewd-how" id="sewdHow">
+                    <span class="sewd-step">① ÷ 10</span>
+                    <span class="sewd-arrow">→</span>
+                    <span class="sewd-step">② ÷ 30</span>
+                    <span class="sewd-arrow">→</span>
+                    <span class="sewd-step">③ + 15 kWh</span>
+                    <span class="sewd-arrow">→</span>
+                    <span class="sewd-step sewd-step-final">④ ÷ 5 kWh</span>
+                </div>
+
+                <!-- Input / Edit form -->
+                <div class="sewd-form">
+                    <label class="sewd-label" for="sewdInput">
+                        📅 Input or Edit 12 Monthly Bill Values (Jan – Dec), separated by commas:
+                    </label>
+                    <input type="text" id="sewdInput" class="sewd-input"
+                        placeholder="e.g. 210,195,225,240,260,275,290,285,250,230,220,200" autocomplete="off"
+                        spellcheck="false" />
+                    <div class="sewd-hint">💡 Values must be in kWh · Exactly 12 values required · Separate with commas
+                    </div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;">
+                        <button class="dash-btn dash-btn-primary" id="sewdCalcBtn" onclick="runWasteDetection()">
+                            ⚡ Analyse Waste
+                        </button>
+                        <button class="dash-btn" onclick="loadSewdExample()">📋 Load Example</button>
+                        <button class="dash-btn" onclick="clearSewdResults()">🗑 Clear</button>
+                    </div>
+                    <div id="sewdError" class="sewd-error" style="display:none;"></div>
+                </div>
+
+                <!-- Results -->
+                <div id="sewdResults" style="display:none;">
+                    <div class="sewd-divider"></div>
+
+                    <!-- Monthly breakdown grid -->
+                    <div class="sewd-results-title">📊 Monthly Waste Analysis Results</div>
+                    <div class="sewd-grid" id="sewdGrid"></div>
+
+                    <!-- Summary bar -->
+                    <div class="sewd-summary" id="sewdSummary"></div>
+                </div>
+                <!-- ===== SITE SETTINGS (ADMIN) ===== -->
+                <div class="chart-card" id="siteSettingsPanel" style="margin-bottom:32px;">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">⚙️ Site Settings (Admin)</div>
+                            <div class="chart-subtitle">Update contact details and team member GitHub repositories</div>
+                        </div>
+                    </div>
+
+                    <div class="sewd-form">
+                        <h3 style="margin-bottom: 12px; color: var(--text);">Contact Details</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                            <div>
+                                <label class="sewd-label">Email Address:</label>
+                                <input type="email" id="editContactEmail" class="sewd-input"
+                                    value="patilsiddhi168@gmail.com" />
+                            </div>
+                            <div>
+                                <label class="sewd-label">Phone Number:</label>
+                                <input type="text" id="editContactPhone" class="sewd-input" value="+91 94034 79155" />
+                            </div>
+                        </div>
+
+                        <h3 style="margin-bottom: 12px; color: var(--text);">Team Member GitHub Repos</h3>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px;">
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <label class="sewd-label" style="width: 180px; margin: 0;">Siddhi Dattatray
+                                    Patil:</label>
+                                <input type="text" id="editRepoSiddhi" class="sewd-input" style="margin: 0;"
+                                    placeholder="github.com/siddhi" />
+                            </div>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <label class="sewd-label" style="width: 180px; margin: 0;">Harish Prabhakar
+                                    Pawal:</label>
+                                <input type="text" id="editRepoHarish" class="sewd-input" style="margin: 0;"
+                                    placeholder="github.com/harish" />
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:12px;">
+                            <button class="dash-btn dash-btn-primary" onclick="saveSiteSettings()">💾 Save
+                                Settings</button>
+                        </div>
+                        <div id="settingsSaveMessage" style="display:none; color: var(--primary); margin-top: 12px;">✅
+                            Settings saved successfully! (In a real app, this would update the backend)</div>
+                    </div>
+                </div>
+
+        </main>
+    </div>
+
+    <script type="module" src="firebase-dashboard.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

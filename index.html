@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Real-Time Idle Electricity Usage Detection System — Smart energy monitoring using IoT and machine learning for a sustainable future." />
+  <title>EnergyGuard — Real-Time Idle Electricity Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+
+<body>
+
+  <!-- Background Effects -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <span class="mobile-close" id="mobileClose">✕</span>
+    <a href="#hero" onclick="closeMobileMenu()">Home</a>
+    <a href="#about" onclick="closeMobileMenu()">About</a>
+    <a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a>
+    <a href="#features" onclick="closeMobileMenu()">Features</a>
+    <a href="#tech-stack" onclick="closeMobileMenu()">Tech Stack</a>
+    <a href="#team" onclick="closeMobileMenu()">Team</a>
+    <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+    <a href="dashboard.html" style="color: var(--primary); font-weight: 700;">Dashboard →</a>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#hero" class="nav-logo">
+        <div class="logo-icon">⚡</div>
+        <span>Energy<span class="gradient-text">Guard</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#tech-stack">Tech Stack</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="dashboard.html" class="nav-cta">Live Dashboard</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="tag hero-tag">🌱 Final Year Engineering Project 2026</div>
+        <h1 class="hero-title">
+          <span>Real-Time Idle</span>
+          <span class="gradient-text">Electricity Usage</span>
+          <span>Detection System</span>
+        </h1>
+        <p class="hero-subtitle">
+          Smart Energy Monitoring for a Sustainable Future — Leveraging IoT sensors and AI-driven data analytics to
+          detect idle electricity consumption and eliminate unnecessary energy waste.
+        </p>
+        <div class="hero-buttons">
+          <a href="dashboard.html" class="btn btn-primary">
+            <span>📊</span> View Dashboard
+          </a>
+          <a href="#about" class="btn btn-outline">
+            <span>▶</span> Learn More
+          </a>
+        </div>
+      </div>
+
+      <!-- Floating Card Visual -->
+      <div class="hero-visual">
+        <div class="hero-card">
+          <div class="hero-card-header">
+            <span class="hero-card-title">Energy Monitor — Live Feed</span>
+            <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+          </div>
+          <div class="hero-stat-grid">
+            <div class="hero-stat">
+              <div class="hero-stat-value" id="heroWatt">4.2 kW</div>
+              <div class="hero-stat-label">Current Usage</div>
+            </div>
+            <div class="hero-stat" style="border-color: rgba(10,132,255,0.3);">
+              <div class="hero-stat-value" style="color: var(--secondary);" id="heroSaved">₹ 120</div>
+              <div class="hero-stat-label">Saved Today</div>
+            </div>
+            <div class="hero-stat" style="border-color: rgba(57,239,154,0.3);">
+              <div class="hero-stat-value" style="color: var(--accent);" id="heroIdle">3</div>
+              <div class="hero-stat-label">Idle Devices</div>
+            </div>
+            <div class="hero-stat" style="border-color: rgba(255,165,0,0.3);">
+              <div class="hero-stat-value" style="color: #ffa500;" id="heroEff">87%</div>
+              <div class="hero-stat-label">Efficiency</div>
+            </div>
+          </div>
+          <div class="mini-chart">
+            <canvas id="heroMiniChart" width="400" height="60"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS BAR ===== -->
+  <div class="stats-bar">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item reveal">
+          <div class="stat-number gradient-text" data-count="40">0%</div>
+          <div class="stat-label">Average Energy Waste Reduced</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-1">
+          <div class="stat-number gradient-text" data-count="500">0+</div>
+          <div class="stat-label">Devices Monitored</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-2">
+          <div class="stat-number gradient-text" data-count="24">0/7</div>
+          <div class="stat-label">Real-Time Monitoring</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-3">
+          <div class="stat-number gradient-text" data-count="98">0%</div>
+          <div class="stat-label">Detection Accuracy</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ABOUT SECTION ===== -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text">
+          <div class="tag">The Problem</div>
+          <h2 class="reveal">Why Idle Electricity <span class="gradient-text">Detection Matters</span></h2>
+          <p class="reveal reveal-delay-1" style="margin-top: 16px;">
+            Globally, an estimated <strong style="color:var(--primary)">10–30% of all electricity</strong> consumed in
+            homes and offices is wasted on idle or standby devices — air conditioners left running in empty rooms,
+            computers never properly shut down, and appliances in phantom load mode.
+          </p>
+          <p class="reveal reveal-delay-2" style="margin-top: 12px;">
+            Our system uses <strong style="color:var(--secondary)">IoT smart sensors</strong> combined with <strong
+              style="color:var(--secondary)">machine learning algorithms</strong> to detect idle consumption patterns in
+            real time, automatically trigger alerts, and provide actionable recommendations for energy reduction.
+          </p>
+          <div class="about-benefits">
+            <div class="benefit-item reveal reveal-delay-1">
+              <div class="benefit-icon green">💰</div>
+              <div>
+                <div class="benefit-title">Cost Saving</div>
+                <p style="font-size:0.85rem">Reduce electricity bills by up to 40% through automated idle device
+                  detection and smart usage scheduling.</p>
+              </div>
+            </div>
+            <div class="benefit-item reveal reveal-delay-2">
+              <div class="benefit-icon blue">⚡</div>
+              <div>
+                <div class="benefit-title">Energy Efficiency</div>
+                <p style="font-size:0.85rem">Real-time monitoring ensures every watt is accounted for, eliminating
+                  phantom loads and standby waste.</p>
+              </div>
+            </div>
+            <div class="benefit-item reveal reveal-delay-3">
+              <div class="benefit-icon purple">🌍</div>
+              <div>
+                <div class="benefit-title">Environmental Protection</div>
+                <p style="font-size:0.85rem">Lower energy consumption directly reduces carbon footprint and supports
+                  sustainable development goals.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="about-image-wrap reveal">
+          <div class="about-diagram">
+            <div style="text-align:center; margin-bottom:24px;">
+              <div class="tag" style="margin:0 auto;">System Flow</div>
+            </div>
+            <div class="flow-row">
+              <div class="flow-node">🏠 Premises</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-node">📡 IoT Sensors</div>
+            </div>
+            <div style="text-align:center; color:var(--text-muted); margin: 4px 0;">↓</div>
+            <div class="flow-row">
+              <div class="flow-node"
+                style="background:rgba(10,132,255,0.1); border-color:rgba(10,132,255,0.3); color:var(--secondary);">☁️
+                Cloud Layer</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-node"
+                style="background:rgba(10,132,255,0.1); border-color:rgba(10,132,255,0.3); color:var(--secondary);">🤖
+                ML Engine</div>
+            </div>
+            <div style="text-align:center; color:var(--text-muted); margin: 4px 0;">↓</div>
+            <div class="flow-row">
+              <div class="flow-node"
+                style="background:rgba(57,239,154,0.1); border-color:rgba(57,239,154,0.3); color:var(--accent);">🔔
+                Alerts</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-node"
+                style="background:rgba(57,239,154,0.1); border-color:rgba(57,239,154,0.3); color:var(--accent);">📊
+                Dashboard</div>
+            </div>
+            <div
+              style="margin-top: 24px; padding: 16px; background: rgba(0,212,170,0.05); border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <p style="font-size:0.8rem; text-align:center; color:var(--text-muted);">End-to-end system: sensor data
+                flows through the cloud ML pipeline, detects idle usage, and delivers instant alerts + analytics</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how-it-works" class="section">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="tag">Process</div>
+        <h2>How It <span class="gradient-text">Works</span></h2>
+        <p>A seamless pipeline from data collection to intelligent action — powered by IoT, cloud computing, and machine
+          learning.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <div class="step-number">1</div>
+          <span class="step-icon">📡</span>
+          <h3>Data Collection</h3>
+          <p>Smart energy meters and IoT current sensors (ACS712, CT clamps) continuously monitor power consumption per
+            device at millisecond intervals.</p>
+        </div>
+        <div class="step-card reveal reveal-delay-1">
+          <div class="step-number">2</div>
+          <span class="step-icon">☁️</span>
+          <h3>Real-Time Transmission</h3>
+          <p>Sensor data is transmitted via MQTT protocol over Wi-Fi/4G to a cloud server (Firebase / AWS IoT) for
+            centralized processing with minimal latency.</p>
+        </div>
+        <div class="step-card reveal reveal-delay-2">
+          <div class="step-number">3</div>
+          <span class="step-icon">🤖</span>
+          <h3>ML Processing</h3>
+          <p>Python machine learning models (Random Forest / LSTM) analyze consumption patterns, classify idle vs active
+            states, and predict anomalies continuously.</p>
+        </div>
+        <div class="step-card reveal reveal-delay-3">
+          <div class="step-number">4</div>
+          <span class="step-icon">🔔</span>
+          <h3>Automated Alerts</h3>
+          <p>When idle consumption is detected, instant SMS/Email alerts are triggered via Twilio/SendGrid APIs, with
+            recommended corrective actions sent to users.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features" class="section">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="tag">Capabilities</div>
+        <h2>Core <span class="gradient-text">Features</span></h2>
+        <p>Everything you need to monitor, detect, and reduce idle electricity consumption in one integrated platform.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">📊</div>
+          <h3>Live Energy Dashboard</h3>
+          <p>Interactive real-time power consumption graphs, device status panels, and usage heatmaps updated every
+            second for complete visibility.</p>
+          <span class="feature-badge">Real-Time</span>
+        </div>
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">🧠</div>
+          <h3>Idle Detection Algorithm</h3>
+          <p>LSTM neural networks trained on historical consumption data to accurately distinguish idle from active
+            device states with 98%+ accuracy.</p>
+          <span class="feature-badge">AI-Powered</span>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">🔔</div>
+          <h3>Real-Time Alerts</h3>
+          <p>Multi-channel notification system (SMS via Twilio, Email via SendGrid, Push Notifications) triggered within
+            seconds of idle detection events.</p>
+          <span class="feature-badge">Instant Alerts</span>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">📈</div>
+          <h3>Historical Analytics</h3>
+          <p>Comprehensive usage reports with daily, weekly, and monthly trends. Exportable CSV/PDF reports for auditing
+            and energy compliance.</p>
+          <span class="feature-badge">Analytics</span>
+        </div>
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">💡</div>
+          <h3>Energy Recommendations</h3>
+          <p>AI-generated personalized suggestions for optimizing device usage schedules, reducing peak-hour
+            consumption, and maximizing energy savings.</p>
+          <span class="feature-badge">AI Insights</span>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">🔒</div>
+          <h3>Secure Cloud Integration</h3>
+          <p>End-to-end encrypted data pipeline with Firebase Authentication, role-based access control, and
+            GDPR-compliant data storage and retention.</p>
+          <span class="feature-badge">Secure</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TECH STACK ===== -->
+  <section id="tech-stack" class="section">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="tag">Technology</div>
+        <h2>Technology <span class="gradient-text">Stack</span></h2>
+        <p>Built on modern, scalable technologies selected for performance, reliability, and cost-effectiveness.</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-category reveal">
+          <div class="tech-category-title">Frontend</div>
+          <div class="tech-items">
+            <div class="tech-item"><span class="tech-icon">🌐</span> HTML5</div>
+            <div class="tech-item"><span class="tech-icon">🎨</span> CSS3</div>
+            <div class="tech-item"><span class="tech-icon">⚙️</span> JavaScript ES6+</div>
+            <div class="tech-item"><span class="tech-icon">📊</span> Chart.js</div>
+            <div class="tech-item"><span class="tech-icon">📱</span> Responsive Design</div>
+          </div>
+        </div>
+        <div class="tech-category reveal reveal-delay-1">
+          <div class="tech-category-title">Backend & ML</div>
+          <div class="tech-items">
+            <div class="tech-item"><span class="tech-icon">🐍</span> Python 3.11</div>
+            <div class="tech-item"><span class="tech-icon">🚀</span> Node.js / Express</div>
+            <div class="tech-item"><span class="tech-icon">🤖</span> Scikit-learn</div>
+            <div class="tech-item"><span class="tech-icon">🧠</span> TensorFlow / Keras</div>
+            <div class="tech-item"><span class="tech-icon">🔌</span> MQTT Broker</div>
+          </div>
+        </div>
+        <div class="tech-category reveal">
+          <div class="tech-category-title">Database & Cloud</div>
+          <div class="tech-items">
+            <div class="tech-item"><span class="tech-icon">🔥</span> Firebase Realtime DB</div>
+            <div class="tech-item"><span class="tech-icon">🗄️</span> MySQL</div>
+            <div class="tech-item"><span class="tech-icon">☁️</span> AWS IoT Core</div>
+            <div class="tech-item"><span class="tech-icon">📦</span> Docker</div>
+          </div>
+        </div>
+        <div class="tech-category reveal reveal-delay-1">
+          <div class="tech-category-title">IoT Hardware</div>
+          <div class="tech-items">
+            <div class="tech-item"><span class="tech-icon">📟</span> ESP32 / NodeMCU</div>
+            <div class="tech-item"><span class="tech-icon">⚡</span> ACS712 Sensor</div>
+            <div class="tech-item"><span class="tech-icon">🔌</span> CT Current Clamp</div>
+            <div class="tech-item"><span class="tech-icon">📡</span> Raspberry Pi 4</div>
+            <div class="tech-item"><span class="tech-icon">🌡️</span> DHT22 Sensor</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TEAM SECTION ===== -->
+  <section id="team" class="section">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="tag">Meet the Team</div>
+        <h2>The Minds Behind <span class="gradient-text">EnergyGuard</span></h2>
+        <p>A dedicated team of engineers passionate about sustainable technology and smart energy solutions.</p>
+      </div>
+      <div class="team-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <div class="team-card reveal">
+          <div class="team-avatar">👩‍💻</div>
+          <div class="team-name">Siddhi Dattatray Patil</div>
+          <div class="team-role">Project Lead & Developer</div>
+          <div class="team-contact">
+            <a href="mailto:patilsiddhi168@gmail.com">patilsiddhi168@gmail.com</a><br />
+            <a href="tel:+919403479155">+91 94034 79155</a>
+          </div>
+        </div>
+        <div class="team-card reveal reveal-delay-1">
+          <div class="team-avatar">👨‍💻</div>
+          <div class="team-name">Harish Prabhakar Pawal</div>
+          <div class="team-role">Lead Developer</div>
+          <div class="team-contact">
+            <a href="mailto:team@energyguard.com">Contact via team email</a><br />
+            <a href="tel:+919403479155">Contact via lead</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT SECTION ===== -->
+  <section id="contact" class="section">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="tag">Get in Touch</div>
+        <h2>Contact <span class="gradient-text">Us</span></h2>
+        <p>Interested in our project? Have questions or collaboration ideas? We'd love to hear from you.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-info-item reveal">
+            <div class="contact-info-icon">📧</div>
+            <div>
+              <div class="contact-info-label">Email Address</div>
+              <div class="contact-info-value">patilsiddhi168@gmail.com</div>
+            </div>
+          </div>
+          <div class="contact-info-item reveal reveal-delay-1">
+            <div class="contact-info-icon">📞</div>
+            <div>
+              <div class="contact-info-label">Phone Number</div>
+              <div class="contact-info-value">+91 94034 79155</div>
+            </div>
+          </div>
+          <div class="contact-info-item reveal reveal-delay-2">
+            <div class="contact-info-icon">🏛️</div>
+            <div>
+              <div class="contact-info-label">Institution</div>
+              <div class="contact-info-value">KBTCOE NASHIK<br />KBT CIRCLE GANPURROAD</div>
+            </div>
+          </div>
+          <div class="contact-info-item reveal reveal-delay-3">
+            <div class="contact-info-icon">🔗</div>
+            <div>
+              <div class="contact-info-label">GitHub Repository</div>
+              <div class="contact-info-value"><a href="#"
+                  style="color:var(--primary)">github.com/energyguard-project</a></div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-form reveal">
+          <form id="contactForm" onsubmit="handleFormSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="firstName">First Name</label>
+                <input type="text" id="firstName" class="form-input" placeholder="Your first name" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="lastName">Last Name</label>
+                <input type="text" id="lastName" class="form-input" placeholder="Your last name" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address</label>
+              <input type="email" id="email" class="form-input" placeholder="your@email.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="subject">Subject</label>
+              <input type="text" id="subject" class="form-input" placeholder="What's this about?" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="message">Message</label>
+              <textarea id="message" class="form-textarea" placeholder="Tell us about your interest or query..."
+                required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+              <span>📨</span> Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== SMART ENERGY WASTE DETECTION CALCULATOR ===== -->
+  <section id="waste-calculator" class="section">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="tag">⚡ Energy Tool</div>
+        <h2>Smart Energy <span class="gradient-text">Waste Detection</span></h2>
+        <p>Enter your previous 12 months of energy consumption to analyse your waste index and efficiency score.</p>
+      </div>
+
+      <div class="calc-wrapper reveal">
+
+        <!-- ─── FORMULA STEPS ─── -->
+        <div class="calc-formula-bar">
+          <div class="formula-step">
+            <div class="formula-step-icon">➗</div>
+            <div class="formula-step-text">
+              <div class="formula-step-label">Step 1</div>
+              <div class="formula-step-desc">Monthly kWh ÷ <strong>10</strong></div>
+            </div>
+          </div>
+          <div class="formula-arrow">→</div>
+          <div class="formula-step">
+            <div class="formula-step-icon">➗</div>
+            <div class="formula-step-text">
+              <div class="formula-step-label">Step 2</div>
+              <div class="formula-step-desc">Result ÷ <strong>30</strong></div>
+            </div>
+          </div>
+          <div class="formula-arrow">→</div>
+          <div class="formula-step">
+            <div class="formula-step-icon">➕</div>
+            <div class="formula-step-text">
+              <div class="formula-step-label">Step 3</div>
+              <div class="formula-step-desc">Result + <strong>15 kWh</strong></div>
+            </div>
+          </div>
+          <div class="formula-arrow">→</div>
+          <div class="formula-step">
+            <div class="formula-step-icon">➗</div>
+            <div class="formula-step-text">
+              <div class="formula-step-label">Step 4</div>
+              <div class="formula-step-desc">Result ÷ <strong>5 kWh</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── INPUT PANEL ─── -->
+        <div class="calc-input-panel">
+          <div class="calc-input-header">
+            <span class="calc-input-title">📅 12-Month Consumption Input (Jan – Dec)</span>
+            <button class="calc-example-btn" id="calcExampleBtn" onclick="fillExampleData()">Load Example →</button>
+          </div>
+          <p class="calc-instructions">
+            Enter exactly <strong>12 values</strong> in kWh, separated by commas.
+            &nbsp;Example: <code>210,195,225,240,260,275,290,285,250,230,220,200</code>
+          </p>
+          <div class="calc-input-row">
+            <textarea id="energyInput" class="calc-textarea"
+              placeholder="210,195,225,240,260,275,290,285,250,230,220,200" rows="3" spellcheck="false"></textarea>
+          </div>
+          <div class="calc-btn-row">
+            <button class="btn btn-primary" id="calcRunBtn" onclick="runWasteCalculator()">
+              <span>⚡</span> Detect Waste
+            </button>
+            <button class="btn btn-outline" onclick="resetCalculator()">
+              <span>🔄</span> Reset
+            </button>
+          </div>
+          <div class="calc-error" id="calcError"></div>
+        </div>
+
+        <!-- ─── RESULTS PANEL ─── -->
+        <div class="calc-results" id="calcResults" style="display:none;">
+          <div class="calc-results-header">
+            <span>📊 Waste Analysis Results</span>
+            <span class="live-badge"><span class="live-dot"></span>Calculated</span>
+          </div>
+
+          <!-- Monthly breakdown table -->
+          <div class="calc-table-wrap">
+            <table class="calc-table" id="calcTable">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Input (kWh)</th>
+                  <th>÷10</th>
+                  <th>÷30</th>
+                  <th>+15</th>
+                  <th>Waste Index (÷5)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="calcTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Summary cards -->
+          <div class="calc-summary-grid" id="calcSummaryGrid"></div>
+
+          <!-- Bar chart -->
+          <div class="calc-chart-wrap">
+            <div class="calc-chart-title">📈 Monthly Waste Index Trend</div>
+            <canvas id="wasteBarChart" height="80"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#hero" class="nav-logo" style="text-decoration:none;">
+            <div class="logo-icon">⚡</div>
+            <span>Energy<span class="gradient-text">Guard</span></span>
+          </a>
+          <p>A final-year engineering project dedicated to eliminating idle electricity waste through smart IoT
+            monitoring and AI-powered detection.</p>
+          <div class="social-links">
+            <a href="#" class="social-link" title="GitHub">💻</a>
+            <a href="#" class="social-link" title="LinkedIn">💼</a>
+            <a href="#" class="social-link" title="Twitter">🐦</a>
+            <a href="#" class="social-link" title="YouTube">▶️</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Quick Links</div>
+          <ul class="footer-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about">About Project</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="dashboard.html">Live Dashboard</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Technology</div>
+          <ul class="footer-links">
+            <li><a href="#tech-stack">Tech Stack</a></li>
+            <li><a href="#">IoT Hardware</a></li>
+            <li><a href="#">ML Models</a></li>
+            <li><a href="#">Cloud Architecture</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Team</div>
+          <ul class="footer-links">
+            <li><a href="#team">Meet the Team</a></li>
+            <li><a href="#contact">Contact Us</a></li>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">GitHub Repo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 EnergyGuard — Real-Time Idle Electricity Detection System. All rights reserved.</span>
+        <span>Built with ❤️ for a sustainable future 🌱</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <span class="toast-icon">✅</span>
+    <div class="toast-text">
+      <strong>Message Sent!</strong>
+      We'll get back to you within 24 hours.
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
